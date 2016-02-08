@@ -27,14 +27,6 @@
 
 using namespace RAT;
 
-//static int events_per_iteration = 1;
-//static int events_per_iteration = 30;
-//static int events_per_iteration = 1;
-//static int events_per_iteration = 10;
-static int events_per_iteration = 1000;
-//static int events_per_iteration = 100000;
-//static int events_per_iteration = 1000000;
-//static int events_per_iteration = 10000000;
 std::string fname;
 std::string fname2;
 std::string dataset_info;
@@ -111,18 +103,35 @@ void trackChi2vsParams(double Chi2, double p0, double p1)
 
 int main(int argc, char* argv[])
 {
-   if ( argc != 2 ) // argc should be 2 for correct execution
+   if ( argc != 5 ) // argc should be 4 for correct execution
    {   // We print argv[0]: it is the program name
-      std::cout<<"usage: "<< argv[0]  << " may02, apr03, oct03, sep01 \n";
+      std::cout<<"usage: "<< argv[0]  << " <may02, apr03, oct03, sep01> <number of event iterations> <p0 value> >p1 value>\n";
       return -1; // exit
    }
 
    std::string dataset = argv[1];
    dataset_info = dataset;
 
+   std::stringstream convert(argv[2]);
+   int events_per_iteration;
+   if(!(convert >> events_per_iteration))
+     events_per_iteration=0;
+   std::cout << "Number of iterations: " << events_per_iteration << std::endl;
 
-    // start RAT logging otherwise horrible error
-    RAT::Log::Init("wwfitter.log");
+   std::stringstream convert2(argv[3]);
+   double p0_val;
+   if(!(convert2 >> p0_val))
+     p0_val=1;
+   std::cout << "p0: " << p0_val << std::endl;
+
+   std::stringstream convert3(argv[4]);
+   double p1_val;
+   if(!(convert3 >> p1_val))
+     p1_val=1;
+   std::cout << "p1: " << p1_val << std::endl;
+
+   // start RAT logging otherwise horrible error
+   RAT::Log::Init("wwfitter.log");
 
     //set the seed (again). Setting it here only did not set the seed in
     // minisim, so that's why it's set in both places.
@@ -143,9 +152,8 @@ int main(int argc, char* argv[])
 
     RAT::DB::Get()->SetI("PMTCALIB", "", "use_qhs_hhp", 0);
     //set starting values(?)
-    //RAT::DB::Get()->SetD("AGED_CONCENTRATOR_PARAMS", "", "p0", 10.0);
-    RAT::DB::Get()->SetD("AGED_CONCENTRATOR_PARAMS", "", "p0", 1.0);
-    RAT::DB::Get()->SetD("AGED_CONCENTRATOR_PARAMS", "", "p1", 130.0);
+    RAT::DB::Get()->SetD("AGED_CONCENTRATOR_PARAMS", "", "p0", p0_val);
+    RAT::DB::Get()->SetD("AGED_CONCENTRATOR_PARAMS", "", "p1", p1_val);
 
     //make a file name to keep params in
     //okay so the file name comes out kind of crazy/ugly.
@@ -192,13 +200,6 @@ int main(int argc, char* argv[])
     HitPMTCollection::Get()->BeginOfRun();
     PMTVariation::Get()->BeginOfRun();
 
-    //SNOdata = new TFile("/data/snoplus/home/kate/newfitter/high_stats_aged_results_radiuscut.root");
-    //SNOpmtr = (TH1D*) SNOdata->Get("p5");
-    //SNOdata = new TFile("/data/snoplus/home/kate/newfitter/event_100_0.50000.root");
-    //SNOpmtr = (TH1D*) SNOdata->Get("SimAngResponse");
-    //SNOdata = new TFile("/data/snoplus/home/kate/newfitter/generation_plane_size_variation.root");
-    //SNOpmtr = (TH1D*) SNOdata->Get("p5_300mm");
-
     //Set data set
     if(dataset.compare("sep00") == 0)
       {
@@ -216,54 +217,8 @@ int main(int argc, char* argv[])
       {
 	SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata_allAngles/data_May02_386.root");
       }
-     /**
-     if(dataset.compare("may02") == 0)
-     {
-     SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata/plots/pmtAngResp_may02new_fruns_386.root");
-     }
-     if(dataset.compare("oct03") == 0)
-     {
-     SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata/plots/pmtAngResp_oct03_fruns_386.root");
-     }
-     if(dataset.compare("sep01") == 0)
-     {
-     SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata/plots/pmtAngResp_sep01old_fruns_386.root");
-     }
-     if(dataset.compare("apr03") == 0)
-     {
-     SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata/plots/pmtAngResp_apr03_fruns_386.root");
-     }
-     **/
-     /**
-     if(dataset.compare("may02") == 0)
-     {
-     SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata/plots2/pmtAngResp_may02new_fruns_620.root");
-     }
-     if(dataset.compare("oct03") == 0)
-     {
-     SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata/plots2/pmtAngResp_oct03_fruns_620.root");
-     }
-     if(dataset.compare("sep01") == 0)
-     {
-     SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata/plots2/pmtAngResp_sep01old_fruns_620.root");
-     }
-     if(dataset.compare("apr03") == 0)
-     {
-     SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata/plots2/pmtAngResp_apr03new_fruns_620.root");
-     }
-     **/
 
     SNOpmtr = (TH1D*) SNOdata->Get("AngularResponse");
-
-    //test const aging
-    //SNOdata = new TFile("../checkAR/planegen_const.root");
-    //SNOpmtr = (TH1D*) SNOdata->Get("angres_386nm_agedconst_0p5_300mmgen_100000000ev");
-
-//    std::cout << "test const aging" << std::endl;
-//    SNOdata = new TFile("../checkAR/planegen_const_3.root");
-//    SNOpmtr = (TH1D*) SNOdata->Get("hResponse");
-//    SNOpmtr->Sumw2();
-//    ScaleProperly(SNOpmtr);
 
     std::cout << "dataset " << dataset << " with " << events_per_iteration << " events" << std::endl;
 
@@ -299,21 +254,6 @@ int main(int argc, char* argv[])
 //    RAT::DB::Get()->Load("AGED_CONCENTRATOR_PARAMS.ratdb");
     double p0;
     double p1;
-    //get the degredation parameters
-    //   DBLinkPtr agedConcentratorDB = DB::Get()->GetLink( "AGED_CONCENTRATOR_PARAMS"); 
-    //    try
-    //     {
-    //     p0 = agedConcentratorDB->GetD( "p0" );
-    //    p1 = agedConcentratorDB->GetD( "p1" );
-    //  }
-    // catch( RAT::DBNotFoundError &e ) 
-    //  { 
-    //    RAT::Log::Die( "ConcentratorAgedOpticalModel::ConcentratorAgedOpticalModel: Cannot Find AGED_CONCENTRATOR Parameters" );
-    //  }
-
-    //std::cout << "FROM FILE: p0 = " << p0 << std::endl;
-    //std::cout << "FROM FILE: p1 = " << p1 << std::endl;
-
 
     std::cout << "in fitter about to make a minisim" << std::endl;
     // run the MiniSim and extract angular response 
@@ -331,13 +271,14 @@ int main(int argc, char* argv[])
    //save bestfit
     char buffy[80];
     //char dataset_chars[5] = {dataset_info[0], dataset_info[1], dataset_info[2], dataset_info[3], dataset_info[4]};    
-    sprintf(buffy, "minisim_output/test_bestfit_reflectx1pt0_%s.root",dataset_chars);
+    //sprintf(buffy, "minisim_output/test_bestfit_reflectx1pt0_%s.root",dataset_chars);
+    sprintf(buffy, "minisim_output/test_bestfit-%s-p0_%g-p1_%g.root",dataset_chars,p0_val,p1_val);
     std::string str(buffy);
     TFile bestf(str.c_str(), "recreate");
-    char buffy2[80];
+    //char buffy2[80];
     //sprintf(buffy2, "test_bestfit_%s_%.5f_%.5f.root",dataset_chars, p0, p1);
-    sprintf(buffy2, "test_bestfit_reflectx1pt0_%s.root",dataset_chars);
-    std::string str2(buffy2);
+    //sprintf(buffy2, "test_bestfit_%s_p0%d_p1%d.root",dataset_chars,p0_val,p1_val);
+    std::string str2(buffy);
     bestfit->SetName(str2.c_str());
     bestfit->SetTitle(str2.c_str());
     bestfit->Write();
@@ -371,94 +312,9 @@ int main(int argc, char* argv[])
 
     trackChi2vsParams(chi2, p0, p1);
     std::cout << "ch2 = " << chi2 << std::endl;
-    /**
-    int nbinswrite = 8;
-    double bins[nbinswrite];
-    bins[0] = SIMpmtr->GetBinContent(1);
-    bins[1] = SIMpmtr->GetBinContent(10);
-    bins[2] = SIMpmtr->GetBinContent(20);
-    bins[3] = SIMpmtr->GetBinContent(30);
-    bins[4] = SIMpmtr->GetBinContent(40);
-    bins[5] = SIMpmtr->GetBinContent(45);
-    bins[6] = SIMpmtr->GetBinContent(50);
-    bins[7] = SIMpmtr->GetBinContent(60);
-    trackbinsvsParams(p0, nbinswrite , bins);
-    **/
+
     delete SIMpmtr;
     
-    //result = chi2;
-
-    //cout << "result: " << result << endl;
-    /**
-    std::cout << "Starting minimzation..." << std::endl;
-    //std::cout << "NOTE: Chi2 only up to 45deg!" << std::endl;
-    // minimize
-    TFitter min(2);
-    min.SetFCN(minuit_function);
-
-    min.SetParameter(0, "p0", fp0, 0.1, 0., 1.);
-    min.SetParameter(1, "p1", fp1, 10., 0., 130.);
- 
-    min.FixParameter(0);
-    //std::cout<<"START VALUE FIXED" << std::endl;
-    min.FixParameter(1);
-//    std::cout<<"p1 FIXED" << std::endl;
-
-    //run the thing
-    double arglist[100];
-    arglist[0] = 5000;
-    arglist[1] = 5.0;
-    //min.ExecuteCommand("MIGRAD", arglist, 2); //MIGRAD fails miserably
-    min.ExecuteCommand("SIMPLEX", arglist, 2);
-    min.ExecuteCommand("MIGRAD", arglist, 2);
-
-    //double fit_border = min.GetParameter(0);
-    double fit_p0 = min.GetParameter(0);
-    double fit_p1 = min.GetParameter(1);
-    //double chi2 = min.GetChisquare();
-    //   std::cout << "Best fit degredation border: " << fit_border << std::endl;
-
-    std::cout << "Final Results: " << std::endl;
-    std::cout << "Best fit p0: " << fit_p0 << " error: " << min.GetParError(0) << std::endl;
-    std::cout << "Best fit p1: " << fit_p1 << " error: " << min.GetParError(1) << std::endl;
-    **/
-
-
-
-    /**
-    //save bestfit
-    //char buffy[80];
-    //sprintf(buffy, "minisim_output/test_bestfit_%s.root",dataset_chars);
-    //std::string str(buffy);
-    //TFile bestf(str.c_str(), "update");
-    //char buffy2[80];
-    TVectorD vp0(1);
-    TVectorD vp1(1);
-    TVectorD vp0err(1);
-    TVectorD vp1err(1);
-    vp0[0]=min.GetParameter(0);
-    vp0err[0]=min.GetParError(0);
-    vp1[0]=min.GetParameter(1);
-    vp1err[0]=min.GetParError(1);
-    vp0.Write("p0");
-    vp0err.Write("p0err");
-    vp1.Write("p1");
-    vp1err.Write("p1err");
-    bestf.Close();   
-    **/  
     SNOdata->Close();
     
-    //trackChi2vsParams(chi2, fit_p0, fit_p1);
-
-   //save bestfit
-//    char buffy[80];
-//    sprintf(buffy, "minisim_output/test_bestfit_%.5f_%.5f.root", fit_p0, fit_p1);
-//    std::string str(buffy);
-//    TFile bestf(str.c_str(), "recreate");
-//    bestfit = (TH1D*) bestfit;
-//    bestfit->Write();
-//    bestf.Close();
-
-
-
 }
