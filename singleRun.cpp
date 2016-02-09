@@ -29,9 +29,9 @@ using namespace RAT;
 
 //static int events_per_iteration = 1;
 //static int events_per_iteration = 30;
-//static int events_per_iteration = 1;
+static int events_per_iteration = 1;
 //static int events_per_iteration = 10;
-static int events_per_iteration = 1000;
+//static int events_per_iteration = 1000;
 //static int events_per_iteration = 100000;
 //static int events_per_iteration = 1000000;
 //static int events_per_iteration = 10000000;
@@ -161,7 +161,7 @@ int main(int argc, char* argv[])
     char buffer[120];
     char bufferA[120];
     char dataset_chars[5] = {dataset_info[0], dataset_info[1], dataset_info[2], dataset_info[3], dataset_info[4]};    
-    sprintf(buffer, "/data/snoplus/home/jackson/SNO+_angular/fitter_exponential/fitOutput/params_");
+    sprintf(buffer, "/data/snoplus/home/sanahbhimani/fitter/fitter_master/fitOutput/params_");
     strcat(buffer,dataset_chars);
     strftime(bufferA,120, "_%F-%H-%M-%S.txt",timeinfo);
     strcat(buffer,bufferA);
@@ -169,7 +169,7 @@ int main(int argc, char* argv[])
 
     char buffer2[120];
     char bufferB[120];
-    sprintf(buffer2, "/data/snoplus/home/jackson/SNO+_angular/fitter_exponential/poppick/values_");
+    sprintf(buffer2, "/data/snoplus/home/sanahbhimani/fitter/fitter_master/poppick/values_");
     strcat(buffer2,dataset_chars);
     strftime(bufferB,120, "_%F-%H-%M-%S.txt",timeinfo);
     strcat(buffer2,bufferB);
@@ -202,54 +202,54 @@ int main(int argc, char* argv[])
     //Set data set
     if(dataset.compare("sep00") == 0)
       {
-	SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata_allAngles/data_Sep00_386.root");
+	SNOdata = new TFile("/data/snoplus/home/sanahbhimani/data_Sep00_386.root");
       }
     if(dataset.compare("sep01") == 0)
       {
-	SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata_allAngles/data_Sep01_386.root");
+	SNOdata = new TFile("/data/snoplus/home/sanahbhimani/data_Sep01_386.root");
       }
     if(dataset.compare("may02") == 0)
       {
-	SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata_allAngles/data_May02_386.root");
+	SNOdata = new TFile("/data/snoplus/home/sanahbhimani/data_May02_386.root");
       }
     if(dataset.compare("apr03") == 0)
       {
-	SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata_allAngles/data_May02_386.root");
+	SNOdata = new TFile("/data/snoplus/home/sanahbhimani/data_May02_386.root");
       }
      /**
      if(dataset.compare("may02") == 0)
      {
-     SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata/plots/pmtAngResp_may02new_fruns_386.root");
+     SNOdata = new TFile("/data/snoplus/home/sanahbhimani/data/pmtAngResp_may02new_fruns_386.root");
      }
      if(dataset.compare("oct03") == 0)
      {
-     SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata/plots/pmtAngResp_oct03_fruns_386.root");
+     SNOdata = new TFile("/data/snoplus/home/sanahbhimani/data/pmtAngResp_oct03_fruns_386.root");
      }
      if(dataset.compare("sep01") == 0)
      {
-     SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata/plots/pmtAngResp_sep01old_fruns_386.root");
+     SNOdata = new TFile("/data/snoplus/home/sanahbhimani/data/pmtAngResp_sep01old_fruns_386.root");
      }
      if(dataset.compare("apr03") == 0)
      {
-     SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata/plots/pmtAngResp_apr03_fruns_386.root");
+     SNOdata = new TFile("/data/snoplus/home/sanahbhimani/data/pmtAngResp_apr03_fruns_386.root");
      }
      **/
      /**
      if(dataset.compare("may02") == 0)
      {
-     SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata/plots2/pmtAngResp_may02new_fruns_620.root");
+     SNOdata = new TFile("/data/snoplus/home/sanahbhimani/data/pmtAngResp_may02new_fruns_620.root");
      }
      if(dataset.compare("oct03") == 0)
      {
-     SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata/plots2/pmtAngResp_oct03_fruns_620.root");
+     SNOdata = new TFile("/data/snoplus/home/sanahbhimani/data/pmtAngResp_oct03_fruns_620.root");
      }
      if(dataset.compare("sep01") == 0)
      {
-     SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata/plots2/pmtAngResp_sep01old_fruns_620.root");
+     SNOdata = new TFile("/data/snoplus/home/sanahbhimani/data/pmtAngResp_sep01old_fruns_620.root");
      }
      if(dataset.compare("apr03") == 0)
      {
-     SNOdata = new TFile("/data/snoplus/home/jackson/SNO+_angular/snodata/plots2/pmtAngResp_apr03new_fruns_620.root");
+     SNOdata = new TFile("/data/snoplus/home/sanahbhimani/data/pmtAngResp_apr03new_fruns_620.root");
      }
      **/
 
